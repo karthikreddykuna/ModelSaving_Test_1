@@ -5,3 +5,5 @@ pickle-mixin
 scikit-learn
 streamlit
 feature-engine
+pandas_profiling
+streamlit-pandas-profiling

@@ -3,6 +3,8 @@ import pickle
 from io import BytesIO
 import requests
 import pandas as pd 
+import pandas_profiling
+from streamlit_pandas_profiling import st_profile_report
 # Code from Best Pipeline.py here
 
 
@@ -10,13 +12,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 # NOTE: Make sure that the outcome column is labeled 'target' in the data file
-tpot_data = pd.read_csv('https://raw.githubusercontent.com/karthikreddykuna/ModelSaving_Test_1/master/APPCode/prepared_data.csv')
+tpot_data = pd.read_csv('ModelSaving_Test_1/Model/https://raw.githubusercontent.com/karthikreddykuna/ModelSaving_Test_1/master/APPCode/prepared_data.csv')
 features = tpot_data.drop('target', axis=1)
 training_features, testing_features, training_target, testing_target = \
             train_test_split(features, tpot_data['target'], random_state=None)
 
 # Average CV score on the training set was: 0.975
-exported_pipeline = LogisticRegression(C=20.0, dual=False, penalty="l2")
+exported_pipeline = LogisticRegression(C=15.0, dual=False, penalty="l2")
 
 exported_pipeline.fit(training_features, training_target)
 
@@ -63,4 +65,15 @@ if 'float' in str(type(prediction[0])):
     st.write(round(prediction[0],2))
 else:
     st.write(prediction[0])
+# Dataset
+st.subheader('Data Set')
+if len(target_encoder_location) > 5:
+    df['target'] = target_encoder.inverse_transform(tpot_data['target'])
+else:
+    df['target'] = tpot_data['target']
+st.write(df)
+#pandas profling-report
+st.subheader('Profiling Report of your dataset')
+pr = df.profile_report()
+st_profile_report(pr)
     
